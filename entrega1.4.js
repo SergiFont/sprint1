@@ -52,16 +52,14 @@ const getEmployeData = async id => {
     try {
         const employee = await getEmployee(id)
         const salary = await getSalary(employee)
-        return `Employee ${employee.name} tiene un sueldo de ${salary}`
+        return console.log(`Soy el ejercicio 1 del nivel 1. Employee ${employee.name} tiene un sueldo de ${salary}`) 
         
     } catch (error) {
-        throw error
+        return console.log(error)
     }
 }
 
 getEmployeData(1)
-    .then(result => console.log(`Soy el ejercicio 1 del nivel 1. ${result}`))
-    .catch(error => console.log(error))
 
 //Nivel 1, ejercicio 2
 /*Crea una nova funció asíncrona que cridi a una altra que retorni una Promise que efectuï la seva 
@@ -69,29 +67,24 @@ funció resolve() després de 2 segons de la seva invocació. */
 
 const orderSomething = async time => {
     try {
-        return await waitPlease(time)
+        await waitPlease(time)
 
     } catch (error) {
-        throw error
+        return console.log(error)
     }
 }
 
 const waitPlease = async(time = 2000) => { //pongo un default para luego poder forzar un error en el nivel 3
     return new Promise((resolve, reject) => {
         setTimeout(() => {
-            if(time > 2000) reject('Beep5! Ups! Algo ha ido mal.')
-            resolve('Soy el ejercicio 2 del nivel 1. Gracias por esperar. Aqui tienes.')
+            if(time > 2000) return reject('Beep5! Ups! Algo ha ido mal.')
+            resolve(console.log('Soy el ejercicio 2 del nivel 1. Gracias por esperar. Aqui tienes.'))
         }, time) //aqui pondría el 2000 directamente, sin parámetros ni argumentos, si no fuera por el nivel 3
     })
-}/*En esta parte me he encontrado problemas muy raros. Primero, si no hago el console.log directamente en el 
-reject y resolve, cuando lo quiero realizar en el then y catch (linea 93 y 94), me devuelve undefined. 
-Segundo, si no pongo el return en la línea 80, también me devuelve el resolve de la 81. Investigando he encontrado 
-algo de que setTimeout se ejecuta en el scoope global. En mi cabeza no consigo unir las piezas,
-aunque imagino que tendrá algo que ver. */
+}
 
-orderSomething()
-    .then(message => console.log(message))
-    .catch(error => console.log(error))
+orderSomething(2000)
+
 
 ///////////////
 //Nivel 2, ejercicio 1
@@ -112,39 +105,26 @@ const doDoubles = async(num1, num2, num3) => {
         const res1 = await duplicate(num1)
         const res2 = await duplicate(num2)
         const res3 = await duplicate(num3)
-        return  res1 + res2 + res3
+        console.log(res1 + res2 + res3)
     } catch (error) {
-        throw error
+        return console.log(error)
     }
 }
 
 doDoubles(2, 4, 6)
-    .then(result => console.log(result))
-    .catch(error => console.log(error))
 
 ///////////////
 //Nivel 3, ejercicio 1
 /*Força i captura tants errors com puguis dels nivells 1 i 2. */
 
 getEmployeData('asd') // id válido
-    .then(result => console.log(result))
-    .catch(error => console.log(`Beep1! ${error}`))
 
 getEmployeData(7) // empleado no existe
-    .then(result => console.log(result))
-    .catch(error => console.log(`Beep2! ${error}`))
 
-getEmployeData(4) // salario no asignado
-    .then(result => console.log(result))
-    .catch(error => console.log(`Beep3! ${error}`))
+getEmployeData(4) // error en el salario
 
 getEmployeData(5) // nombre no registrado
-    .then(result => console.log(result))
-    .catch(error => console.log(`Beep4! ${error}`))
 
 orderSomething(6500) // tiempo límite superado, Beep 5
-    .then(result => console.log(result))
-    .catch(error => console.log(error))
 
 doDoubles("asd", "asd", "asd") // NaN, Beep 6
-    .catch(error => console.log(error))
