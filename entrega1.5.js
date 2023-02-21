@@ -93,12 +93,12 @@ TODO Crea una altra funció que desencripti i descodifiqui els fitxers de l'apar
 generar una còpia de l'inicial.
 Inclou un README amb instruccions per a l'execució de cada part.*/
 
-const data = fs.readFile('./texto-nivel1.txt', 'utf8', (error, data) => {
-    if (error) return console.log(error)
-    return data
-})
 
 const encodeFile = encoding => {
+    const data = fs.readFile('./texto-nivel1.txt', 'utf8', (error, data) => {
+        if (error) return console.log(error)
+        return data
+    })
     const buffer = Buffer.from(String(data)).toString(encoding)
     fs.writeFile(`./texto-nivel1-${encoding}.txt`, buffer, error => {
         if (error) {
@@ -130,9 +130,9 @@ const encryptDocument = encoding => {
             fs.writeFile(`./texto-nivel1-${encoding}-encrypted.txt`, buffer, error => {
                 if (error) console.log(error)
 
-                fs.unlink(`./texto-nivel1-${encoding}.txt`, error => {
-                    if (error) console.log(error)
-                })
+                // fs.unlink(`./texto-nivel1-${encoding}.txt`, error => {
+                //     if (error) console.log(error)
+                // })
             })
         })
     }, 500)
@@ -144,7 +144,9 @@ encryptDocument('hex')
 const decipherFiles = (file, encoding) => {
     const descipher = crypto.createDecipheriv('aes-192-ccm', KEY, IV, {authTagLength: 12})
     let decrypted = descipher.update(file, encoding, 'utf8')
-    decrypted += descipher.final('utf8')
+    // console.log(file)
+    // console.log(encoding)
+    // decrypted += descipher.final('utf8')
     return decrypted
 }
 
@@ -152,6 +154,8 @@ const uncryptDocument = encoding => {
     setTimeout(() => {
         fs.readFile(`./texto-nivel1-${encoding}-encrypted.txt`, 'utf8', (error, data) => {
             if (error) return console.log(error)
+            // console.log(data)
+            // console.log(encoding)
 
             const buffer = Buffer.from(String(decipherFiles(data, encoding))).toString(encoding)
 
@@ -164,3 +168,7 @@ const uncryptDocument = encoding => {
 
 uncryptDocument('base64')
 uncryptDocument('hex')
+
+/* TODO probar de usar async awaits para llamar a los pasos en vez de usar setTimeout.
+Según Omar, el texto cifrado en hex y base64 'texto-nivel1-hex.txt' es muy corto, es posible que se corte el proceso en mitad
+y eso de errores internos en la desencryptación */
